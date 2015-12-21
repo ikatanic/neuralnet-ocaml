@@ -1,4 +1,4 @@
-C = ocamlopt str.cmxa 
+C = ocamlopt
 SRC = util.ml neuralnet.ml example.ml
 EXE = example
 
