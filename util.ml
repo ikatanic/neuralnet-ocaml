@@ -1,12 +1,13 @@
 type vector = float array
 type matrix = { r : int; c : int; data : float array }
 
+let last l = List.nth l ((List.length l) - 1)
+let sum = Array.fold_left (+.) 0.0
+
 let ($) m (r, c) = m.data.(r*m.c + c)
 
 let init r c f = 
   { r=r; c=c; data=Array.init (r*c) (fun i -> f (i/c) (i mod c)) }
-
-let sum = Array.fold_left (+.) 0.0
 
 let mul_vec_mat vec mat =
   assert ((Array.length vec) = mat.r);

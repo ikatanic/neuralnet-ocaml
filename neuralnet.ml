@@ -1,8 +1,6 @@
-open Matrix
+open Util
 
 let sigm x = 1. /. (1. +. (exp (-.x)))
-let last l = List.nth l ((List.length l) - 1)
-let sum = Array.fold_left (+.) 0.0
 
 let rec forward_propagation net x =
   match net with
