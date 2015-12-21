@@ -44,6 +44,7 @@ let fit ?(alg_type=Batch)
         ?(max_iter=10_000)
         ?(eps=1e-3)
         ?(rate=0.2)
+        ?(verbose=false)
         dataset =
 
   let dataset = List.map (fun (x, y) -> (Array.append [|1.0|] x, y)) dataset in
@@ -60,7 +61,7 @@ let fit ?(alg_type=Batch)
   let iter = ref 0 in
   let cur = ref 0 in
   while !iter < max_iter && error !net dataset > eps; do
-    if !iter mod 50 = 0 then Printf.eprintf "iter = %d, E = %f\n%!" !iter (error !net dataset);
+    if verbose then Printf.eprintf "iter = %d, E = %f\n%!" !iter (error !net dataset);
 
     let add_nets a b = List.map2 add_mat_mat a b in
     let net' = ref !net in
