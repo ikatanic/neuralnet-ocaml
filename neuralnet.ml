@@ -46,6 +46,7 @@ let fit ?(alg_type=Batch)
         ?(rate=0.2)
         ?(verbose=false)
         dataset =
+  assert (List.length dataset > 0);
 
   let dataset = List.map (fun (x, y) -> (Array.append [|1.0|] x, y)) dataset in
   let dataset = Array.of_list dataset in

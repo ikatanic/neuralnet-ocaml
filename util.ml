@@ -30,6 +30,6 @@ let map2 f a b =
   assert ((Array.length a) = (Array.length b));
   Array.init (Array.length a) (fun i -> f a.(i) b.(i))
 
-let ( -- ) a b = map2 ( -. ) a b
-let ( ++ ) a b = map2 ( +. ) a b
-let ( ** ) a b = map2 ( *. ) a b
+let ( -- ) = map2 ( -. )
+let ( ++ ) = map2 ( +. )
+let ( ** ) = map2 ( *. )
