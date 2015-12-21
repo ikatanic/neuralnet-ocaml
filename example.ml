@@ -18,8 +18,14 @@ let () =
     ]
   in
 
-  (* we will use neural network with 2 hidden layers of size 2x6 *)
-  let net = Neuralnet.fit ~layers:[6] ~eps:1e-4 ~max_iter:100_000 ~rate:1.0 dataset in
+  (* we will use neural network with one hidden layer of size 6 *)
+  let net = Neuralnet.fit 
+              ~layers:[6] 
+              ~eps:1e-4 
+              ~max_iter:100_000 
+              ~rate:1.0 
+              dataset 
+  in
   
   (* let's see how it predicts: *)
   List.iter (fun x ->
