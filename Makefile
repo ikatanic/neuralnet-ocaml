@@ -1,12 +1,11 @@
 C = ocamlopt str.cmxa 
-GL = -I +glMLite GL.cmxa Glu.cmxa Glut.cmxa
 SRC = util.ml neuralnet.ml example.ml
 EXE = example
 
-all: $(EXE) $(OBJ)
+all: $(EXE)
 
 example: util.ml neuralnet.ml example.ml
-	$(C) $(GL) $^ -o $@
+	$(C) $^ -o $@
 
 clean:
 	rm -f $(EXE) *.cmx *.cmi *.cmo *.cma *.o
