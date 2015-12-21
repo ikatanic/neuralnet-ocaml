@@ -27,7 +27,7 @@ You have two methods at your disposal:
 Example
 -------
 
-You can see basic usage example in ```example.ml```.
+You can see basic usage in ```example.ml```.
 To run it type:
 
 ```
