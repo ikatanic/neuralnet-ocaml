@@ -48,7 +48,7 @@ let fit ?(alg_type=Batch)
         dataset =
   assert (List.length dataset > 0);
 
-  let dataset = List.map (fun (x, y) -> (Array.append [|1.0|] x, y)) dataset in
+  let dataset = List.map (fun (x, y) -> Array.of_list (1.0::x), Array.of_list y) dataset in
   let dataset = Array.of_list dataset in
   let n = Array.length dataset in
 
@@ -76,4 +76,8 @@ let fit ?(alg_type=Batch)
   done;
   !net
 
-let predict net x = last (forward_propagation net (Array.append [|1.0|] x))
+let predict net x =
+  1.0::x
+  |> Array.of_list
+  |> forward_propagation net
+  |> last
