@@ -3,10 +3,17 @@ Artificial neural network library for OCaml
 
 This is a basic artificial neural network library written as a part of (Fuzzy, evolutionary and neuro-computing) course assignment at my university.
 
-Library consists of two source files ```neuralnet.ml``` and ```util.ml```.
+Technical details
+-----------------
+
+It's a feedforward multilayer fullyconnected artificial neural network.
+Network learning is done with backpropagation algorithm.
+Activation function of all neurons is sigmoid function.
 
 How to use
 ----------
+
+Library consists of two source files ```neuralnet.ml``` and ```util.ml```.
 
 You have two methods at your disposal:
 
