@@ -7,8 +7,8 @@ Technical details
 -----------------
 
 It's a feedforward multilayer fullyconnected artificial neural network.
-Network learning is done with backpropagation algorithm.
-Activation function of all neurons is sigmoid function.
+Network learning is done using backpropagation algorithm.
+All neurons have sigmoid function as activation function.
 
 How to use
 ----------
@@ -35,7 +35,7 @@ Example
 -------
 
 You can see basic usage in ```example.ml```.
-To run it type:
+To run it do:
 
 ```
    make
