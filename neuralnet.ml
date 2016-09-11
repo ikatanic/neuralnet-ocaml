@@ -1,5 +1,7 @@
 open Util
 
+type t = matrix list
+                
 let sigm x = 1. /. (1. +. (exp (-.x)))
 
 let rec forward_propagation net x =

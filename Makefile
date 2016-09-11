@@ -1,10 +1,10 @@
 C = ocamlopt
-SRC = util.ml neuralnet.ml example.ml
+SRC = util.ml neuralnet.mli neuralnet.ml example.ml
 EXE = example
 
 all: $(EXE)
 
-example: util.ml neuralnet.ml example.ml
+example: util.ml neuralnet.mli neuralnet.ml example.ml
 	$(C) $^ -o $@
 
 clean:
