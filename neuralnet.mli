@@ -5,6 +5,7 @@ type algorithm_type = Batch | Stohastic | MiniBatch
 val fit :
   ?alg_type:algorithm_type ->
   ?layers:int list ->
+  ?activation:Activation.t ->
   ?max_iter:int ->
   ?eps:float ->
   ?rate:float ->
@@ -12,4 +13,4 @@ val fit :
   (float list * float list) list ->
   t
               
-val predict : t -> float list -> float array
+val predict : t -> float list -> float list

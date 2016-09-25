@@ -7,13 +7,10 @@ Technical details
 -----------------
 
 It's a feedforward multilayer fullyconnected artificial neural network.
-Network learning is done using backpropagation algorithm.
-All neurons have sigmoid function as activation function.
+Network learning is implemented as gradient descent by backpropagation algorithm.
 
 How to use
 ----------
-
-Library consists of two source files ```neuralnet.ml``` and ```util.ml```.
 
 You have two methods at your disposal:
 
@@ -21,6 +18,7 @@ You have two methods at your disposal:
 * ```dataset``` - list of tuples (input, output) where input/output are float arrays
 * ```alg_type``` - optional. Specifies gradient descent type, ```Batch```, ```Stohastic``` or ```MiniBatch```. Defaults to ```Batch```
 * ```layers``` - optional. Specifies sizes of hidden layers in neural network. Defaults to ```[]``` (no hidden layers)
+* ```activation``` - optional. Activation function to be used. Defaults to ```Activation.sigmoid```.
 * ```max_iter``` - optional. Gradient descent will do at most ```max_iter``` iterations. Defaults to ```10000```
 * ```eps``` - optional. Gradient descent will stop after learning error reaches ```eps```. Defaults to ```1e-3```
 * ```rate``` - optional. Coefficient to multiply gradients with when updating the weights. Defaults to ```0.2```

@@ -1,48 +1,54 @@
 open Util
 
-type t = matrix list
-                
-let sigm x = 1. /. (1. +. (exp (-.x)))
+type t =
+  { w : matrix list
+  ; act : Activation.t
+  }
 
-let rec forward_propagation net x =
-  match net with
-  | hd :: tl -> x :: forward_propagation tl (Array.map sigm (mul_vec_mat x hd))
-  | [] -> [x]
-                 
-let rec backward_propagation net (x, y) =
-  let grad x = x *. (1.0 -. x) in
-  let rec propagate net out y =
-    match net, out with
-    | [], [o] -> ((y -- o) ** (Array.map grad o), [])
+let forward_propagation t x =
+  let activate = Array.map (Activation.f t.act) in
+  let rec propagate w x =
+    match w with
+    | hd :: tl -> x :: propagate tl (activate (mul_vec_mat x hd))
+    | [] -> [x]
+  in
+  propagate t.w x
+
+let backward_propagation t (x, y) =
+  let gradient = Array.map (Activation.df t.act) in
+  let rec propagate w out y =
+    match w, out with
+    | [], [o] -> ((y -- o) ** (gradient o), [])
     | w :: wtl, o :: otl ->
        let d, dwtl = propagate wtl otl y in
-       let d' = (mul_mat_vec w d) ** (Array.map grad o) in
+       let d' = (mul_mat_vec w d) ** (gradient o) in
        let dw = mul_vec_vec o d in
        (d', dw::dwtl)
     | _ -> assert false
   in
-  snd (propagate net (forward_propagation net x) y)
+  snd (propagate t.w (forward_propagation t x) y)
 
-let rec init_net layers =
+let rec init_weights layers =
   match layers with
-  | hd1 :: hd2 :: tl -> 
+  | hd1 :: hd2 :: tl ->
      let w = init hd1 hd2 (fun i j -> -1.0 +. (Random.float 2.0)) in
-     w :: (init_net (hd2::tl))
+     w :: (init_weights (hd2::tl))
   | _ -> []
 
-let error_single net (x, y) =
-  let diff = (last (forward_propagation net x)) -- y in
+let error_single t (x, y) =
+  let diff = (last (forward_propagation t x)) -- y in
   sum (diff ** diff)
 
-let error net dataset =
-  let total = sum (Array.map (error_single net) dataset) in
+let error t dataset =
+  let total = sum (Array.map (error_single t) dataset) in
   total /. float_of_int (Array.length dataset)
 
 
 type algorithm_type = Batch | Stohastic | MiniBatch
-                                              
-let fit ?(alg_type=Batch) 
+
+let fit ?(alg_type=Batch)
         ?(layers=[])
+        ?(activation=Activation.sigmoid)
         ?(max_iter=10_000)
         ?(eps=1e-3)
         ?(rate=0.2)
@@ -54,32 +60,40 @@ let fit ?(alg_type=Batch)
   let dataset = Array.of_list dataset in
   let n = Array.length dataset in
 
-  let g = match alg_type with Batch -> n | Stohastic -> 1 | MiniBatch -> 2 in
+  let g =
+    match alg_type with
+    | Batch -> n
+    | Stohastic -> 1
+    | MiniBatch -> 2
+  in
 
   let ins = Array.length (fst dataset.(0)) in
   let outs = Array.length (snd dataset.(0)) in
   let layers = ins :: layers @ [outs] in
 
-  let net = ref (init_net layers) in
-  let iter = ref 0 in
-  let cur = ref 0 in
-  while !iter < max_iter && error !net dataset > eps; do
-    if verbose then Printf.eprintf "iter = %d, E = %f\n%!" !iter (error !net dataset);
+  let rec loop t iters cur =
+    if iters <= 0 || error t dataset <= eps
+    then t
+    else
+      let rec batch_loop rem cur acc =
+        if rem <= 0
+        then acc
+        else
+          let add_weights w1 w2 = List.map2 add_mat_mat w1 w2 in
+          let dw = backward_propagation t dataset.(cur) in
+          let acc = add_weights acc (List.map (scale_mat rate) dw) in
+          batch_loop (rem - 1) ((cur + 1) mod n) acc
+      in
+      let t = {t with w = batch_loop g cur t.w} in
+      loop t (iters - 1) ((cur + g) mod n)
+  in
 
-    let add_nets a b = List.map2 add_mat_mat a b in
-    let net' = ref !net in
-    for i = 1 to g do
-      let dw = backward_propagation !net dataset.(!cur) in
-      net' := add_nets !net' (List.map (scale_mat rate) dw);
-      cur := (!cur + 1) mod n
-    done;
-    net := !net';
-    iter := !iter + 1
-  done;
-  !net
+  let t = {w = init_weights layers; act = activation} in
+  loop t max_iter 0
 
-let predict net x =
+let predict t x =
   1.0::x
   |> Array.of_list
-  |> forward_propagation net
+  |> forward_propagation t
   |> last
+  |> Array.to_list
